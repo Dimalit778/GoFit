@@ -14,6 +14,7 @@ export default function InputC(props: InputCProps) {
     <View style={[styles.container, props.containerStyle && props.containerStyle]}>
       {props.icon && props.icon}
       <TextInput
+        inputMode={props.inputMode ?? 'text'}
         style={[styles.input, props.inputStyle]}
         placeholderTextColor={theme.colors.textSecondary}
         ref={props.inputRef && props.inputRef}

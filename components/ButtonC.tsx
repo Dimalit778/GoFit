@@ -7,13 +7,19 @@ interface ButtonCProps extends TouchableOpacityProps {
   style?: ViewStyle
   onPress: () => void
   loading?: boolean
+  disabled?: boolean
   hasShadow?: boolean
   children?: ReactNode
 }
 
-export default function ButtonC({ style, onPress, loading, children, hasShadow, ...rest }: ButtonCProps) {
+export default function ButtonC({ style, onPress, loading, children, hasShadow, disabled, ...rest }: ButtonCProps) {
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={onPress} disabled={loading} {...rest}>
+    <TouchableOpacity
+      style={[styles.container, style, { opacity: loading || disabled ? 0.3 : 1 }]}
+      onPress={onPress}
+      disabled={loading || disabled}
+      {...rest}
+    >
       {loading ? <ActivityIndicator size="small" color={theme.colors.background} /> : children}
     </TouchableOpacity>
   )

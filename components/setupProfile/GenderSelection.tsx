@@ -1,3 +1,4 @@
+import { spacingY } from '@/constants/sizes'
 import { theme } from '@/constants/theme'
 import { Image } from 'expo-image'
 import React from 'react'
@@ -10,7 +11,6 @@ export function GenderSelection() {
 
   const handleSelect = (gender: 'male' | 'female') => {
     updateProfileData({ gender })
-    // setCurrentStep(2)
   }
 
   const handleNext = () => {
@@ -23,6 +23,7 @@ export function GenderSelection() {
       subtitle="Select the option that best represents you"
       showBackButton={false}
       onNext={handleNext}
+      isNextDisabled={!profileData.gender}
     >
       <View style={styles.container}>
         <Pressable
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    // alignItems: 'center',
+    marginTop: spacingY._20,
   },
   image: {
     flex: 1,

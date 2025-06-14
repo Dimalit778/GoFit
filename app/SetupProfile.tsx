@@ -1,6 +1,3 @@
-import TextC from '@/components/TextC'
-import { spacingY } from '@/constants/sizes'
-import { theme } from '@/constants/theme'
 import { useSupabase } from '@/contexts/SupabaseProvider'
 import { useAuth, useUser } from '@clerk/clerk-expo'
 import { Redirect, useRouter } from 'expo-router'
@@ -12,8 +9,6 @@ import { BodyMeasurements } from '../components/setupProfile/BodyMeasurements'
 import { GenderSelection } from '../components/setupProfile/GenderSelection'
 import { WorkoutExperience } from '../components/setupProfile/WorkoutExperience'
 import { ProfileSetupProvider, useProfileSetup } from '../contexts/ProfileSetupContext'
-
-// import { ProfileSetupProvider, useProfileSetup } from "../../contexts/ProfileSetupContext";
 
 function ProfileSetupContent() {
   const { user } = useUser()
@@ -70,15 +65,6 @@ function ProfileSetupContent() {
 export default function ProfileSetup() {
   return (
     <ScreenWrapper>
-      <TextC
-        size={24}
-        fontWeight="bold"
-        color={theme.colors.primary}
-        style={{ textAlign: 'center', marginTop: spacingY._15 }}
-      >
-        Complete Your Profile
-      </TextC>
-      <View style={{ height: 16 }} />
       <ProfileSetupProvider>
         <ProfileSetupContent />
       </ProfileSetupProvider>

@@ -1,8 +1,7 @@
 import { spacingY } from '@/constants/sizes'
 import { theme } from '@/constants/theme'
-import { BlurView } from 'expo-blur'
 import React from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { useProfileSetup } from '../../contexts/ProfileSetupContext'
 import ButtonC from '../ButtonC'
 import TextC from '../TextC'
@@ -35,7 +34,7 @@ export function SetupLayout({
   }
 
   return (
-    <BlurView intensity={100} style={styles.content}>
+    <View style={styles.content}>
       {/* Header */}
       <View style={styles.header}>
         <TextC size={28} fontWeight="bold" color={theme.colors.text}>
@@ -54,9 +53,11 @@ export function SetupLayout({
       {/* Navigation */}
       <View style={styles.navigation}>
         {showBackButton && currentStep > 1 && (
-          <Pressable style={[styles.button, styles.backButton]} onPress={handleBack}>
-            <Text style={styles.buttonText}>Back</Text>
-          </Pressable>
+          <ButtonC onPress={handleBack}>
+            <TextC size={16} fontWeight="bold" color={theme.colors.background}>
+              Back
+            </TextC>
+          </ButtonC>
         )}
 
         {showNextButton && (
@@ -72,14 +73,7 @@ export function SetupLayout({
           </ButtonC>
         )}
       </View>
-
-      {/* Progress Indicator */}
-      <View style={styles.progressContainer}>
-        {Array.from({ length: 4 }).map((_, index) => (
-          <View key={index} style={[styles.progressDot, currentStep >= index + 1 && styles.activeProgressDot]} />
-        ))}
-      </View>
-    </BlurView>
+    </View>
   )
 }
 
@@ -89,66 +83,18 @@ const styles = StyleSheet.create({
     padding: spacingY._20,
   },
   header: {
-    marginBottom: spacingY._10,
+    marginTop: spacingY._30,
     alignItems: 'center',
-    gap: spacingY._10,
+    gap: spacingY._15,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: spacingY._5,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
+
   mainContent: {
     flex: 1,
-    justifyContent: 'center',
-    paddingTop: spacingY._30,
+    marginTop: spacingY._20,
   },
   navigation: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: spacingY._20,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    minWidth: 120,
-    alignItems: 'center',
-  },
-  backButton: {
-    backgroundColor: '#e0e0e0',
-  },
-  nextButton: {
-    backgroundColor: theme.colors.yellow,
-  },
-  disabledButton: {
-    backgroundColor: '#ccc',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  nextButtonText: {
-    color: '#fff',
-  },
-  progressContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#e0e0e0',
-    marginHorizontal: 4,
-  },
-  activeProgressDot: {
-    backgroundColor: '#007AFF',
+    marginBottom: spacingY._25,
   },
 })
