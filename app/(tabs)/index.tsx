@@ -1,75 +1,119 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { ScreenWrapper } from '@/components/ScreenWrapper'
+import { useSupabase } from '@/contexts/SupabaseProvider'
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Profile } from '@/utils/supabaseTypes'
+import { useAuth, useUser } from '@clerk/clerk-expo'
+import { Redirect, useFocusEffect } from 'expo-router'
+import React, { useCallback, useState } from 'react'
+
+import { Button, StyleSheet, Text, View } from 'react-native'
 
 export default function HomeScreen() {
+  const { user } = useUser()
+  const { signOut } = useAuth()
+
+  const [profileData, setProfileData] = useState<Profile | null>(null)
+
+  const { getProfile } = useSupabase()
+
+  useFocusEffect(
+    useCallback(() => {
+      getProfileData()
+    }, [user?.id]),
+  )
+
+  const getProfileData = async () => {
+    const profile = await getProfile()
+
+    setProfileData(profile[0])
+  }
+  if (!profileData || !profileData?.first_name) {
+    return <Redirect href="/SetupProfile" />
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    <ScreenWrapper>
+      <View style={styles.container}>
+        <Text style={styles.greeting}>Hello, {user?.primaryEmailAddress?.emailAddress}! 👋</Text>
+        <Text style={styles.sectionTitle}>Profile Information</Text>
+        <Text style={styles.text}>
+          Name: {profileData?.first_name} {profileData?.last_name}
+        </Text>
+        <Text style={styles.text}>Email: {profileData?.email}</Text>
+        <Text style={styles.text}>Date of Birth: {profileData?.date_of_birth}</Text>
+        <Text style={styles.text}>Gender: {profileData?.gender}</Text>
+        <Text style={styles.text}>Height: {profileData?.height}</Text>
+        <Text style={styles.text}>Weight: {profileData?.weight}</Text>
+        <Text style={styles.text}>Body Type: {profileData?.body}</Text>
+        <Text style={styles.text}>Activity Level: {profileData?.activity}</Text>
+        <Text style={styles.text}>Fitness Goal: {profileData?.goal}</Text>
+      </View>
+      <View>{/* <Button title="Save Profile" onPress={handleSaveProfile} /> */}</View>
+
+      <View style={styles.buttonContainer}>
+        <Button title="Logout" onPress={() => signOut()} />
+      </View>
+    </ScreenWrapper>
+  )
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    padding: 20,
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    width: '100%',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  text: {
+    color: 'white',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  greeting: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
   },
-});
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  profileSection: {
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: '#fff',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    width: '100%',
+    maxWidth: 400,
+  },
+})
